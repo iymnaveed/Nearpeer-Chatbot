@@ -1,0 +1,33 @@
+from flask import Flask, request, jsonify
+import os
+from utils import handle_text, handle_voice
+
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return 'WhatsApp Chatbot is running!'
+
+@app.route('/webhook', methods=['POST'])
+def webhook():
+    data = request.get_json()
+
+    if not data:
+        return jsonify({"error": "No data received"}), 400
+
+    msg_type = data.get("type", "")
+    user_message = data.get("message", "")
+    media_url = data.get("media_url", "")
+    language = data.get("language", "auto")
+
+    if msg_type == "text":
+        reply = handle_text(user_message, language)
+    elif msg_type == "voice":
+        reply = handle_voice(media_url)
+    else:
+        reply = "❌ Unsupported message type."
+
+    return jsonify({"reply": reply}), 200
+
+if __name__ == '__main__':
+    app.run(debug=True)

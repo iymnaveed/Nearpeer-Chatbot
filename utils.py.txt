@@ -1,0 +1,7 @@
+def handle_text(message, language="auto"):
+    if "fees" in message.lower():
+        return "📚 Our course fee is Rs. 5000 per month."
+    return f"You said: {message}"
+
+def handle_voice(media_url):
+    return "🗣 Voice message received. (STT coming soon!)"
